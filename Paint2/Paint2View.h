@@ -3,7 +3,7 @@
 //
 
 #pragma once
-
+#include <vector>
 
 class CPaint2View : public CView
 {
@@ -20,7 +20,16 @@ public:
 
 	BOOL m_bDrag;
 	enum Shape_Name;
+	typedef struct m_MyShape {
+		CPoint m_ptStart;
+		CPoint m_ptEnd;
+		int m_nShape;
+		BOOL m_bFill;
+	}m_MyShape;
 
+	m_MyShape MyShape;
+
+	std::vector<m_MyShape> m_ShapeList;
 // 재정의입니다.
 public:
 	virtual void OnDraw(CDC* pDC);  // 이 뷰를 그리기 위해 재정의되었습니다.

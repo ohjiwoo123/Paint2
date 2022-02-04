@@ -12,7 +12,7 @@
 
 #include "Paint2Doc.h"
 #include "Paint2View.h"
-#include <vector>
+//#include <vector>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -43,28 +43,18 @@ BEGIN_MESSAGE_MAP(CPaint2View, CView)
 END_MESSAGE_MAP()
 
 // CPaint2View 생성/소멸
-typedef struct g_MyShape {
-	CPoint g_ptStart;
-	CPoint g_ptEnd;
-	int g_nShape;
-	BOOL g_bFill;
-}g_MyShape;
-
-g_MyShape MyShape;
-
-std::vector<g_MyShape> g_ShapeList;
 
 
 
 CPaint2View::CPaint2View() noexcept
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
-	MyShape.g_ptStart.x=0;
-	MyShape.g_ptStart.y=0;
-	MyShape.g_ptEnd.x = 0;
-	MyShape.g_ptEnd.y=0;
-	MyShape.g_nShape = 0;
-	MyShape.g_bFill = FALSE;
+	MyShape.m_ptStart.x=0;
+	MyShape.m_ptStart.y=0;
+	MyShape.m_ptEnd.x = 0;
+	MyShape.m_ptEnd.y=0;
+	MyShape.m_nShape = 0;
+	MyShape.m_bFill = FALSE;
 	m_bDrag = FALSE;
 
 }
@@ -147,29 +137,29 @@ void CPaint2View::OnPaint()
 	CBrush MyBrush(RGB(255, 0, 0));
 	CPen MyPen(0, 10, RGB(255, 0, 0));
 
-	for (int i = 0; i < g_ShapeList.size(); i++)
+	for (int i = 0; i < m_ShapeList.size(); i++)
 	{
-		if (g_ShapeList[i].g_bFill)
+		if (m_ShapeList[i].m_bFill)
 		{
 			OldBrush = dc.SelectObject(&MyBrush);
 			OldPen = dc.SelectObject(&MyPen);
 		}
 
-		switch (g_ShapeList[i].g_nShape)
+		switch (m_ShapeList[i].m_nShape)
 		{
 		case 0:
-			dc.MoveTo(g_ShapeList[i].g_ptStart);
-			dc.LineTo(g_ShapeList[i].g_ptEnd);
+			dc.MoveTo(m_ShapeList[i].m_ptStart);
+			dc.LineTo(m_ShapeList[i].m_ptEnd);
 			break;
 		case 1:
-			dc.Rectangle(g_ShapeList[i].g_ptStart.x, g_ShapeList[i].g_ptStart.y, g_ShapeList[i].g_ptEnd.x, g_ShapeList[i].g_ptEnd.y);
+			dc.Rectangle(m_ShapeList[i].m_ptStart.x, m_ShapeList[i].m_ptStart.y, m_ShapeList[i].m_ptEnd.x, m_ShapeList[i].m_ptEnd.y);
 			break;
 		case 2:
-			dc.Ellipse(g_ShapeList[i].g_ptStart.x, g_ShapeList[i].g_ptStart.y, g_ShapeList[i].g_ptEnd.x, g_ShapeList[i].g_ptEnd.y);
+			dc.Ellipse(m_ShapeList[i].m_ptStart.x, m_ShapeList[i].m_ptStart.y, m_ShapeList[i].m_ptEnd.x, m_ShapeList[i].m_ptEnd.y);
 			break;
 		}
 
-		if (g_ShapeList[i].g_bFill)
+		if (m_ShapeList[i].m_bFill)
 		{
 			dc.SelectObject(OldBrush);
 			dc.SelectObject(OldPen);
@@ -183,7 +173,7 @@ void CPaint2View::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
 	m_bDrag = TRUE;
-	MyShape.g_ptStart = point;
+	MyShape.m_ptStart = point;
 
 	CView::OnLButtonDown(nFlags, point);
 }
@@ -194,7 +184,7 @@ void CPaint2View::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	if (m_bDrag)
 	{
-		MyShape.g_ptEnd = point;
+		MyShape.m_ptEnd = point;
 		RedrawWindow();
 	}
 	CView::OnMouseMove(nFlags, point);
@@ -206,8 +196,8 @@ void CPaint2View::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	if (m_bDrag)
 	{
-		MyShape.g_ptEnd = point;
-		g_ShapeList.push_back(MyShape);
+		MyShape.m_ptEnd = point;
+		m_ShapeList.push_back(MyShape);
 		RedrawWindow();
 		m_bDrag = FALSE;
 	}
@@ -218,14 +208,14 @@ void CPaint2View::OnLButtonUp(UINT nFlags, CPoint point)
 void CPaint2View::OnLine()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	MyShape.g_nShape = 0;
+	MyShape.m_nShape = 0;
 }
 
 
 void CPaint2View::OnUpdateLine(CCmdUI* pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	if (MyShape.g_nShape == 0)
+	if (MyShape.m_nShape == 0)
 	{
 		pCmdUI->SetCheck(1);
 	}
@@ -239,14 +229,14 @@ void CPaint2View::OnUpdateLine(CCmdUI* pCmdUI)
 void CPaint2View::OnRectangle()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	MyShape.g_nShape = 1;
+	MyShape.m_nShape = 1;
 }
 
 
 void CPaint2View::OnUpdateRectangle(CCmdUI* pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	if (MyShape.g_nShape == 1)
+	if (MyShape.m_nShape == 1)
 	{
 		pCmdUI->SetCheck(1);
 	}
@@ -260,13 +250,13 @@ void CPaint2View::OnUpdateRectangle(CCmdUI* pCmdUI)
 void CPaint2View::OnFill()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	if (MyShape.g_bFill)
+	if (MyShape.m_bFill)
 	{
-		MyShape.g_bFill = FALSE;
+		MyShape.m_bFill = FALSE;
 	}
 	else
 	{
-		MyShape.g_bFill = TRUE;
+		MyShape.m_bFill = TRUE;
 	}
 }
 
@@ -274,7 +264,7 @@ void CPaint2View::OnFill()
 void CPaint2View::OnUpdateFill(CCmdUI* pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	if (MyShape.g_bFill)
+	if (MyShape.m_bFill)
 	{
 		pCmdUI->SetCheck(1);
 	}
@@ -288,14 +278,14 @@ void CPaint2View::OnUpdateFill(CCmdUI* pCmdUI)
 void CPaint2View::OnEllipse()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	MyShape.g_nShape = 2;
+	MyShape.m_nShape = 2;
 }
 
 
 void CPaint2View::OnUpdateEllipse(CCmdUI* pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	if (MyShape.g_nShape==2)
+	if (MyShape.m_nShape==2)
 	{
 		pCmdUI->SetCheck(1);
 	}
